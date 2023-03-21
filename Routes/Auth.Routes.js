@@ -155,7 +155,7 @@ router.post('/login', async (req, res) => {
 				res.json({
 					success: true,
 					access_token: token,
-					id: user._id,
+					email: user.email,
 				});
 			}
 		} else {
