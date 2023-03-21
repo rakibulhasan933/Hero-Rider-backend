@@ -57,7 +57,7 @@ router.post('/rider', async (req, res) => {
 			carName: req.body?.carName,
 			carModel: req.body?.carModel,
 			vehicle: req.body?.vehicle,
-			role: 'student',
+			role: "student",
 			profilePicture: profilePictureImageBuffer,
 			drivingLicense: drivingLicenseImageBuffer,
 			nidPicture: nidPictureImageBuffer,
