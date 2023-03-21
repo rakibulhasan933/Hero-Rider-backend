@@ -54,6 +54,7 @@ router.post('/rider', async (req, res) => {
 			carName: req.body?.carName,
 			carModel: req.body?.carModel,
 			vehicle: req.body?.vehicle,
+			role: req.body?.role,
 			profilePicture: profilePictureImageBuffer,
 			drivingLicense: drivingLicenseImageBuffer,
 			nidPicture: nidPictureImageBuffer,
@@ -66,8 +67,6 @@ router.post('/rider', async (req, res) => {
 	}
 });
 router.post('/learner', async (req, res) => {
-	console.log(req.body);
-	console.log(req.files);
 	try {
 		// Picture Convert base64 profilePicture
 		const profilePictures = req.files.profilePicture;
@@ -95,6 +94,7 @@ router.post('/learner', async (req, res) => {
 			phone: req.body?.phone,
 			address: req.body?.address,
 			vehicle: req.body?.vehicle,
+			role: req.body?.role,
 			profilePicture: profilePictureImageBuffer,
 			nidPicture: nidPictureImageBuffer,
 		});
@@ -104,9 +104,19 @@ router.post('/learner', async (req, res) => {
 	} catch (error) {
 		res.send(error);
 	}
-})
-router.get('/login', async (req, res) => {
-	res.send('Hello Login')
+});
+router.post('/login', async (req, res) => {
+	try {
+		const riderMatched = await Rider.findOne({ email: req.body?.email })
+		const learnerMatched = await Learner.findOne({ email: req.body?.email })
+		if (riderMatched || learnerMatched) {
+			res.send('Matched Email')
+		} else {
+			return res.json({ error: `${req.body.email} not register user, Please Register than try Login` })
+		}
+	} catch (error) {
+		res.send(error);
+	}
 })
 
 module.exports = router;
