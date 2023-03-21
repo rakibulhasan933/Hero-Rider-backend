@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const RiderSchema = mongoose.Schema({
+const LearnerSchema = mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -23,16 +23,10 @@ const RiderSchema = mongoose.Schema({
 		type: Number,
 		required: true,
 	},
-	area: {
-		type: String,
-		required: true,
-	},
-
 	address: {
 		type: String,
 		required: true,
 	},
-
 	vehicle: {
 		type: String,
 		required: true,
@@ -45,26 +39,6 @@ const RiderSchema = mongoose.Schema({
 		type: Buffer,
 		required: true,
 	},
-	drivingLicense: {
-		type: Buffer,
-		required: true,
-	},
-	carName: {
-		type: String,
-		required: true,
-	},
-	carModel: {
-		type: String,
-		required: true,
-	},
-	carNamePlate: {
-		type: Buffer,
-		required: true,
-	},
-	role: {
-		type: String,
-		required: true,
-	},
 });
 
-module.exports = RiderSchema;
+module.exports = LearnerSchema;
