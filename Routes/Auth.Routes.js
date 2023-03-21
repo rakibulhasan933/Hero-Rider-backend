@@ -188,6 +188,28 @@ router.get('/student', async (req, res) => {
 		res.send(error);
 	}
 });
+// Age Search
+router.get('/age', async (req, res) => {
+	try {
+		const highest = req.query.highest;
+		const lowest = req.query.lowest;
+		let students;
+		if (highest && lowest) {
+			students = await Rider.find({
+				$and: [
+					{ age: { $gte: lowest } }, { age: { $lte: highest } }
+				]
+			})
+		} else {
+			students = await Rider.find({});
+		}
+		if (students) {
+			res.send({ success: true, data: students });
+		}
+	} catch (error) {
+		res.send(error);
+	}
+})
 
 // ALL Teachers
 router.get('/teachers', async (req, res) => {
