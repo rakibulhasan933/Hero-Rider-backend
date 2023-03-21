@@ -108,9 +108,25 @@ router.post('/learner', async (req, res) => {
 router.post('/login', async (req, res) => {
 	try {
 		const riderMatched = await Rider.findOne({ email: req.body?.email })
-		const learnerMatched = await Learner.findOne({ email: req.body?.email })
-		if (riderMatched || learnerMatched) {
-			res.send('Matched Email')
+		const learnerMatched = await Learner.findOne({ email: req.body?.email });
+		const user = riderMatched || learnerMatched;
+		if (user) {
+			const isValidPassword = await bcrypt.compare(req.body.password, user?.password);
+			if (!isValidPassword) {
+				res.status(401).json({
+					"error": "Authentication failed"
+				});
+			} else {
+				const token = jwt.sign({
+					email: user.email,
+					userId: user._id,
+				}, process.env.JWT_PRIVATE_KEY, { expiresIn: '10h', issuer: 'hero-rider.com', });
+				res.json({
+					success: true,
+					access_token: token,
+					id: user._id,
+				});
+			}
 		} else {
 			return res.json({ error: `${req.body.email} not register user, Please Register than try Login` })
 		}
