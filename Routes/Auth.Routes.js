@@ -174,6 +174,12 @@ router.get('/students', async (req, res) => {
 	} catch (error) {
 		res.send(error);
 	}
-})
+});
+
+// ALL Teachers
+router.get('/teachers', async (req, res) => {
+	const result = await Learner.find({});
+	res.json(result);
+});
 
 module.exports = router;
