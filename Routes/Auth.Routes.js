@@ -38,8 +38,9 @@ router.post('/rider', async (req, res) => {
 		const carNamePlateImageBuffer = Buffer.from(encodeCarNamePlate, 'base64');
 
 		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
-		const doseExist = await Rider.findOne({ email: req.body?.email })
-		if (doseExist) {
+		const riderMatched = await Rider.findOne({ email: req.body?.email })
+		const learnerMatched = await Learner.findOne({ email: req.body?.email })
+		if (riderMatched || learnerMatched) {
 			return res.json({ error: `${req.body?.email} is already register`, });
 		}
 		const newRider = new Rider({
@@ -65,6 +66,8 @@ router.post('/rider', async (req, res) => {
 	}
 });
 router.post('/learner', async (req, res) => {
+	console.log(req.body);
+	console.log(req.files);
 	try {
 		// Picture Convert base64 profilePicture
 		const profilePictures = req.files.profilePicture;
