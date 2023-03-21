@@ -16,11 +16,11 @@ const RiderSchema = mongoose.Schema({
 		required: true,
 	},
 	age: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 	phone: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 	area: {

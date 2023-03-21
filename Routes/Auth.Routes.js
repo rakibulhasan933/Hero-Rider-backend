@@ -166,10 +166,24 @@ router.post('/login', async (req, res) => {
 });
 
 // Get ALL Students
-router.get('/students', async (req, res) => {
+router.get('/student', async (req, res) => {
 	try {
-		const result = await Rider.find({});
-		res.send(result);
+		const search = req.query.search;
+		let students;
+		if (search) {
+			students = await Rider.find({
+				$or: [
+					{ name: new RegExp(search, "i") },
+					{ email: new RegExp(search, "i") },
+					{ phone: new RegExp(search, "i") }
+				]
+			});
+		} else {
+			students = await Rider.find({});
+		}
+		if (students) {
+			res.send({ success: true, data: students });
+		}
 	} catch (error) {
 		res.send(error);
 	}
