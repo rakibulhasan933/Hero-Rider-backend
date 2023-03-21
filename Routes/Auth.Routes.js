@@ -182,4 +182,18 @@ router.get('/teachers', async (req, res) => {
 	res.json(result);
 });
 
+//GET ID FILTER
+router.get('/:email', async (req, res) => {
+	try {
+		const email = req.params.email;
+		const rider = await Rider.findOne({ email: email });
+		const learner = await Learner.findOne({ email: email });
+		const admin = await Admin.findOne({ email: email });
+		const matched = rider || learner || admin;
+		res.send(matched);
+	} catch (error) {
+		res.send(error);
+	}
+});
+
 module.exports = router;
