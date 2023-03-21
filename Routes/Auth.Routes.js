@@ -5,39 +5,38 @@ const bcrypt = require('bcrypt');
 const RiderSchema = require('../schema/riderSchema');
 const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
-const ObjectId = require('mongodb').ObjectId;
 
 const router = express.Router();
 
-const Rider = new mongoose.model("rider", RiderSchema);
-const Learner = new mongoose.model("learner", LearnerSchema);
-const Admin = new mongoose.model("admin", AdminSchema);
+const Rider = new mongoose.model("riders", RiderSchema);
+const Learner = new mongoose.model("learners", LearnerSchema);
+const Admin = new mongoose.model("admins", AdminSchema);
 
 // Create Rider 
 router.post('/rider', async (req, res) => {
 	try {
 		// Picture Convert base64 profilePicture
 		const profilePictures = req.files.profilePicture;
-		const profilePictureData = profilePictures.data;
-		const encodeProfilePicture = profilePictureData.toString('base64');
+		const profilePictureData = await profilePictures.data;
+		const encodeProfilePicture = await profilePictureData.toString('base64');
 		const profilePictureImageBuffer = Buffer.from(encodeProfilePicture, 'base64');
 
 		// Picture Convert base64 drivingLicense
 		const drivingLicenses = req.files.drivingLicense;
-		const drivingLicenseData = drivingLicenses.data;
-		const encodeDrivingLicense = drivingLicenseData.toString('base64');
+		const drivingLicenseData = await drivingLicenses.data;
+		const encodeDrivingLicense = await drivingLicenseData.toString('base64');
 		const drivingLicenseImageBuffer = Buffer.from(encodeDrivingLicense, 'base64');
 
 		// Picture Convert base64 nidPicture
 		const nidPictures = req.files.nidPicture;
-		const nidPictureData = nidPictures.data;
-		const encodeNidPicture = nidPictureData.toString('base64');
+		const nidPictureData = await nidPictures.data;
+		const encodeNidPicture = await nidPictureData.toString('base64');
 		const nidPictureImageBuffer = Buffer.from(encodeNidPicture, 'base64');
 
 		// Picture Convert base64 carNamePlate
 		const carNamePlates = req.files.carNamePlate;
-		const carNamePlateData = carNamePlates.data;
-		const encodeCarNamePlate = carNamePlateData.toString('base64');
+		const carNamePlateData = await carNamePlates.data;
+		const encodeCarNamePlate = await carNamePlateData.toString('base64');
 		const carNamePlateImageBuffer = Buffer.from(encodeCarNamePlate, 'base64');
 
 		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
@@ -98,14 +97,14 @@ router.post('/learner', async (req, res) => {
 	try {
 		// Picture Convert base64 profilePicture
 		const profilePictures = req.files.profilePicture;
-		const profilePictureData = profilePictures.data;
-		const encodeProfilePicture = profilePictureData.toString('base64');
+		const profilePictureData = await profilePictures.data;
+		const encodeProfilePicture = await profilePictureData.toString('base64');
 		const profilePictureImageBuffer = Buffer.from(encodeProfilePicture, 'base64');
 
 		// Picture Convert base64 nidPicture
 		const nidPictures = req.files.nidPicture;
-		const nidPictureData = nidPictures.data;
-		const encodeNidPicture = nidPictureData.toString('base64');
+		const nidPictureData = await nidPictures.data;
+		const encodeNidPicture = await nidPictureData.toString('base64');
 		const nidPictureImageBuffer = Buffer.from(encodeNidPicture, 'base64');
 
 		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
