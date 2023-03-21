@@ -4,12 +4,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const RiderSchema = require('../schema/riderSchema');
 const LearnerSchema = require('../schema/learnerSchema');
+const AdminSchema = require('../schema/adminSchema');
 const ObjectId = require('mongodb').ObjectId;
 
 const router = express.Router();
 
 const Rider = new mongoose.model("rider", RiderSchema);
 const Learner = new mongoose.model("learner", LearnerSchema);
+const Admin = new mongoose.model("admin", AdminSchema);
 
 router.post('/rider', async (req, res) => {
 	try {
@@ -40,7 +42,8 @@ router.post('/rider', async (req, res) => {
 		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
 		const riderMatched = await Rider.findOne({ email: req.body?.email })
 		const learnerMatched = await Learner.findOne({ email: req.body?.email })
-		if (riderMatched || learnerMatched) {
+		const AdminMatched = await Admin.findOne({ email: req.body?.email })
+		if (riderMatched || learnerMatched || AdminMatched) {
 			return res.json({ error: `${req.body?.email} is already register`, });
 		}
 		const newRider = new Rider({
@@ -54,13 +57,33 @@ router.post('/rider', async (req, res) => {
 			carName: req.body?.carName,
 			carModel: req.body?.carModel,
 			vehicle: req.body?.vehicle,
-			role: req.body?.role,
+			role: 'student',
 			profilePicture: profilePictureImageBuffer,
 			drivingLicense: drivingLicenseImageBuffer,
 			nidPicture: nidPictureImageBuffer,
 			carNamePlate: carNamePlateImageBuffer,
 		});
 		const result = await newRider.save();
+		res.json({ success: true, result });
+	} catch (error) {
+		res.send(error);
+	}
+});
+router.post('/addAdmin', async (req, res) => {
+	try {
+		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
+		const riderMatched = await Rider.findOne({ email: req.body?.email })
+		const learnerMatched = await Learner.findOne({ email: req.body?.email })
+		const AdminMatched = await Admin.findOne({ email: req.body?.email })
+		if (riderMatched || learnerMatched || AdminMatched) {
+			return res.json({ error: `${req.body?.email} is already register`, });
+		}
+		const newAdmin = new Admin({
+			email: req.body.email,
+			password: hashedPassword,
+			role: "admin",
+		});
+		const result = await newAdmin.save();
 		res.json({ success: true, result });
 	} catch (error) {
 		res.send(error);
@@ -97,6 +120,7 @@ router.post('/learner', async (req, res) => {
 			role: req.body?.role,
 			profilePicture: profilePictureImageBuffer,
 			nidPicture: nidPictureImageBuffer,
+			role: "teacher"
 		});
 		const result = await newLearner.save();
 		res.json({ success: true, result });

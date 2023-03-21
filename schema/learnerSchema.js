@@ -7,13 +7,13 @@ const LearnerSchema = mongoose.Schema({
 	},
 	email: {
 		type: String,
+		lowerCase: true,
+		unique: true,
 		required: true,
 	},
 	password: {
 		type: String,
 		required: true,
-		lowerCase: true,
-		unique: true,
 	},
 	age: {
 		type: Number,
@@ -37,6 +37,10 @@ const LearnerSchema = mongoose.Schema({
 	},
 	nidPicture: {
 		type: Buffer,
+		required: true,
+	},
+	role: {
+		type: String,
 		required: true,
 	},
 });
