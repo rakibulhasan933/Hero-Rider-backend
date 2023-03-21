@@ -13,6 +13,7 @@ const Rider = new mongoose.model("rider", RiderSchema);
 const Learner = new mongoose.model("learner", LearnerSchema);
 const Admin = new mongoose.model("admin", AdminSchema);
 
+// Create Rider 
 router.post('/rider', async (req, res) => {
 	try {
 		// Picture Convert base64 profilePicture
@@ -64,11 +65,13 @@ router.post('/rider', async (req, res) => {
 			carNamePlate: carNamePlateImageBuffer,
 		});
 		const result = await newRider.save();
-		res.json({ success: true, result });
+		res.json({ success: true });
 	} catch (error) {
 		res.send(error);
 	}
 });
+
+// Create Admin
 router.post('/addAdmin', async (req, res) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
@@ -84,11 +87,13 @@ router.post('/addAdmin', async (req, res) => {
 			role: "admin",
 		});
 		const result = await newAdmin.save();
-		res.json({ success: true, result });
+		res.json({ success: true });
 	} catch (error) {
 		res.send(error);
 	}
 });
+
+// Create Teacher
 router.post('/learner', async (req, res) => {
 	try {
 		// Picture Convert base64 profilePicture
@@ -123,12 +128,14 @@ router.post('/learner', async (req, res) => {
 			role: "teacher"
 		});
 		const result = await newLearner.save();
-		res.json({ success: true, result });
+		res.json({ success: true });
 
 	} catch (error) {
 		res.send(error);
 	}
 });
+
+// Login
 router.post('/login', async (req, res) => {
 	try {
 		const riderMatched = await Rider.findOne({ email: req.body?.email })
@@ -154,6 +161,16 @@ router.post('/login', async (req, res) => {
 		} else {
 			return res.json({ error: `${req.body.email} not register user, Please Register than try Login` })
 		}
+	} catch (error) {
+		res.send(error);
+	}
+});
+
+// Get ALL Students
+router.get('/students', async (req, res) => {
+	try {
+		const result = await Rider.find({});
+		res.send(result);
 	} catch (error) {
 		res.send(error);
 	}
