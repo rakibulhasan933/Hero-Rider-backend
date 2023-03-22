@@ -1,21 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-const JWTVerify = async (req, res, next) => {
-
-	const authHeader = req.headers.authorization;
+const JWTVerify = (req, res, next) => {
+	const { authorization } = req.headers;
 	try {
-		if (!authHeader) {
-			return res.status(401).send({ message: 'Unauthorized access' });
-		};
-		const token = await authHeader.split(' ')[1];
-		jwt.verify(token, process.env.JWT_PRIVATE_KEY, function (decoded) {
-			req.decoded = decoded;
-			console.log(req.decoded);
-			next();
-		});
+		const token = authorization.split(' ')[1];
+		const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+		const { email } = decoded;
+		console.log(decoded);
+		req.email = email;
+		next();
 	} catch (error) {
-		res.status(403).send({ message: 'Forbidden access' })
+		next(error.message);
 	}
 };
 
 module.exports = JWTVerify;
+

@@ -6,7 +6,7 @@ const Admin = new mongoose.model("admins", AdminSchema);
 
 
 const AdminVerify = async (req, res, next) => {
-	const requester = req?.decoded;
+	const requester = req?.email;
 	const requesterAccount = await Admin.findOne({ email: requester });
 	if (requesterAccount?.role === 'admin') {
 		next();

@@ -152,8 +152,7 @@ router.post('/login', async (req, res) => {
 				});
 			} else {
 				const token = jwt.sign({
-					email: user.email,
-					userId: user._id,
+					email: user.email
 				}, process.env.JWT_PRIVATE_KEY, { expiresIn: '10h', issuer: 'hero-rider.com', });
 				res.json({
 					success: true,
