@@ -7,7 +7,7 @@ const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
 const AdminVerify = require('../helpers/admin_verify');
-const BlockSchema = require('../schema/blocksechema');
+const BlockSchema = require('../blocksechema');
 
 const router = express.Router();
 
