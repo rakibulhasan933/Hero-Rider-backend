@@ -103,7 +103,7 @@ router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
 				blocked: true,
 			},
 		}, { new: true });
-		res.send(result);
+		res.send({ success: true, result });
 	} catch (error) {
 		res.send(error);
 	}
