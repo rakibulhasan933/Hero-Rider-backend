@@ -185,7 +185,8 @@ router.get('/student', async (req, res) => {
 			students = await Rider.find({}).skip(skips).limit(5);
 		}
 		if (students) {
-			res.send({ success: true, data: students });
+			const data = await students.sort((a, b) => b.age - a.age);
+			res.send({ success: true, data });
 		}
 	} catch (error) {
 		res.send(error);
