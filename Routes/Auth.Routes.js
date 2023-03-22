@@ -166,10 +166,13 @@ router.post('/login', async (req, res) => {
 	}
 });
 
+
 // Get ALL Students
 router.get('/student', async (req, res) => {
 	try {
 		const search = req.query.search;
+		const highest = req.query.highest;
+		const lowest = req.query.lowest;
 		const page = Number(req.query.page) || 1;
 		const skips = (page - 1) * 5;
 		let students;
@@ -181,11 +184,17 @@ router.get('/student', async (req, res) => {
 					{ phone: new RegExp(search, "i") }
 				]
 			}).skip(skips).limit(5);
+		} else if (highest > lowest) {
+			students = await Rider.find({
+				$and: [
+					{ age: { $gte: lowest } }, { age: { $lte: highest } }
+				]
+			}).skip(skips).limit(5);
 		} else {
 			students = await Rider.find({}).skip(skips).limit(5);
 		}
 		if (students) {
-			const data = await students.sort((a, b) => b.age - a.age);
+			const data = await students.sort((a, b) => a.age - b.age);
 			res.send({ success: true, data });
 		}
 	} catch (error) {
@@ -195,15 +204,10 @@ router.get('/student', async (req, res) => {
 // Age Search
 router.get('/age', async (req, res) => {
 	try {
-		const highest = req.query.highest;
-		const lowest = req.query.lowest;
+
 		let students;
 		if (highest && lowest) {
-			students = await Rider.find({
-				$and: [
-					{ age: { $gte: lowest } }, { age: { $lte: highest } }
-				]
-			})
+
 		} else {
 			students = await Rider.find({});
 		}
