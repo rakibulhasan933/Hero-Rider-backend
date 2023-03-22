@@ -73,29 +73,6 @@ router.post('/rider', async (req, res) => {
 	}
 });
 
-// Create Admin
-router.post('/addAdmin', async (req, res) => {
-	try {
-		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
-		const riderMatched = await Rider.findOne({ email: req.body?.email })
-		const learnerMatched = await Learner.findOne({ email: req.body?.email })
-		const AdminMatched = await Admin.findOne({ email: req.body?.email })
-		if (riderMatched || learnerMatched || AdminMatched) {
-			return res.json({ error: `${req.body?.email} is already register`, });
-		}
-		const newAdmin = new Admin({
-			email: req.body.email,
-			password: hashedPassword,
-			role: "admin",
-		});
-		const result = await newAdmin.save();
-		res.json({ success: true });
-	} catch (error) {
-		res.send(error);
-	}
-});
-
-
 // Create Teacher
 router.post('/learner', async (req, res) => {
 	try {
@@ -133,6 +110,28 @@ router.post('/learner', async (req, res) => {
 		const result = await newLearner.save();
 		res.json({ success: true });
 
+	} catch (error) {
+		res.send(error);
+	}
+});
+
+// Create Admin
+router.post('/addAdmin', async (req, res) => {
+	try {
+		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
+		const riderMatched = await Rider.findOne({ email: req.body?.email })
+		const learnerMatched = await Learner.findOne({ email: req.body?.email })
+		const AdminMatched = await Admin.findOne({ email: req.body?.email })
+		if (riderMatched || learnerMatched || AdminMatched) {
+			return res.json({ error: `${req.body?.email} is already register`, });
+		}
+		const newAdmin = new Admin({
+			email: req.body.email,
+			password: hashedPassword,
+			role: "admin",
+		});
+		const result = await newAdmin.save();
+		res.json({ success: true });
 	} catch (error) {
 		res.send(error);
 	}
