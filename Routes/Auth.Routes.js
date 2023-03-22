@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const RiderSchema = require('../schema/riderSchema');
 const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
+const JWTVerify = require('../helpers/jwt_verify');
 
 const router = express.Router();
 
@@ -166,7 +167,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 // Search Query
-router.get('/student', async (req, res) => {
+router.get('/student', JWTVerify, async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
