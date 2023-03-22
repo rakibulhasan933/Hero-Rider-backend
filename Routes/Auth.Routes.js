@@ -12,6 +12,7 @@ const Rider = new mongoose.model("riders", RiderSchema);
 const Learner = new mongoose.model("learners", LearnerSchema);
 const Admin = new mongoose.model("admins", AdminSchema);
 
+
 // Create Rider 
 router.post('/rider', async (req, res) => {
 	try {
@@ -169,6 +170,8 @@ router.post('/login', async (req, res) => {
 router.get('/student', async (req, res) => {
 	try {
 		const search = req.query.search;
+		const page = Number(req.query.page) || 1;
+		const skips = (page - 1) * 5;
 		let students;
 		if (search) {
 			students = await Rider.find({
@@ -177,9 +180,9 @@ router.get('/student', async (req, res) => {
 					{ email: new RegExp(search, "i") },
 					{ phone: new RegExp(search, "i") }
 				]
-			});
+			}).skip(skips).limit(5);
 		} else {
-			students = await Rider.find({});
+			students = await Rider.find({}).skip(skips).limit(5);
 		}
 		if (students) {
 			res.send({ success: true, data: students });
