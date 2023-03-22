@@ -65,6 +65,11 @@ const RiderSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	blocked: {
+		type: Boolean,
+		default: false,
+		required: true,
+	},
 });
 
 module.exports = RiderSchema;
