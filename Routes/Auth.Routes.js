@@ -64,6 +64,7 @@ router.post('/rider', async (req, res) => {
 			drivingLicense: drivingLicenseImageBuffer,
 			nidPicture: nidPictureImageBuffer,
 			carNamePlate: carNamePlateImageBuffer,
+			blocked: false,
 		});
 		const result = await newRider.save();
 		res.json({ success: true });
@@ -94,35 +95,6 @@ router.post('/addAdmin', async (req, res) => {
 	}
 });
 
-// Add Block User
-router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
-	try {
-		const email = req.body.email;
-		const result = await Rider.updateOne({ email: email }, {
-			$set: {
-				blocked: true,
-			},
-		}, { new: true });
-		res.send({ success: true, result });
-	} catch (error) {
-		res.send(error);
-	}
-});
-
-// Removed Block
-router.put('/removed-block', JWTVerify, AdminVerify, async (req, res) => {
-	try {
-		const email = req.body.email;
-		const result = await Rider.updateOne({ email: email }, {
-			$set: {
-				blocked: false,
-			},
-		}, { new: true });
-		res.send({ success: true, result });
-	} catch (error) {
-		res.send(error);
-	}
-});
 
 // Create Teacher
 router.post('/learner', async (req, res) => {
@@ -244,6 +216,36 @@ router.get('/:email', JWTVerify, async (req, res) => {
 		const admin = await Admin.findOne({ email: email });
 		const matched = rider || learner || admin;
 		res.send(matched);
+	} catch (error) {
+		res.send(error);
+	}
+});
+
+// Add Block User
+router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
+	try {
+		const email = req.body.email;
+		const result = await Rider.updateOne({ email: email }, {
+			$set: {
+				blocked: true,
+			},
+		}, { new: true });
+		res.send({ success: true, result });
+	} catch (error) {
+		res.send(error);
+	}
+});
+
+// Removed Block
+router.put('/removed-block', JWTVerify, AdminVerify, async (req, res) => {
+	try {
+		const email = req.body.email;
+		const result = await Rider.updateOne({ email: email }, {
+			$set: {
+				blocked: false,
+			},
+		}, { new: true });
+		res.send({ success: true, result });
 	} catch (error) {
 		res.send(error);
 	}
