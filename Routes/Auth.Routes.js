@@ -7,15 +7,12 @@ const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
 const AdminVerify = require('../helpers/admin_verify');
-const BlockSchema = require('../blocksechema');
 
 const router = express.Router();
 
 const Rider = new mongoose.model("riders", RiderSchema);
 const Learner = new mongoose.model("learners", LearnerSchema);
 const Admin = new mongoose.model("admins", AdminSchema);
-const BlockUsers = new mongoose.model("blockUsers", BlockSchema);
-
 
 // Create Rider 
 router.post('/rider', async (req, res) => {
@@ -98,10 +95,14 @@ router.post('/addAdmin', async (req, res) => {
 });
 
 // Add Block User
-router.put('/block', async (req, res) => {
+router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const email = req.body.email;
-		const result = await Rider.findByIdAndUpdate(email, { blocked: true }, { new: true });
+		const result = await Rider.updateOne({ email: email }, {
+			$set: {
+				blocked: true,
+			},
+		}, { new: true });
 		res.send(result);
 	} catch (error) {
 		res.send(error);
@@ -109,11 +110,15 @@ router.put('/block', async (req, res) => {
 });
 
 // Removed Block
-router.put('/removed-block', async (req, res) => {
+router.put('/removed-block', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const email = req.body.email;
-		const result = await Rider.findByIdAndUpdate(email, { blocked: false }, { new: true });
-		res.send(result);
+		const result = await Rider.updateOne({ email: email }, {
+			$set: {
+				blocked: false,
+			},
+		}, { new: true });
+		res.send({ success: true, result });
 	} catch (error) {
 		res.send(error);
 	}
