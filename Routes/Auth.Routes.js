@@ -165,8 +165,6 @@ router.post('/login', async (req, res) => {
 		res.send(error);
 	}
 });
-
-
 // Search Query
 router.get('/student', async (req, res) => {
 	try {
@@ -183,19 +181,18 @@ router.get('/student', async (req, res) => {
 					{ email: new RegExp(search, "i") },
 					{ phone: new RegExp(search, "i") }
 				]
-			}).skip(skips).limit(5);
+			}).skip(skips).limit(3).sort('age');
 		} else if (highest > lowest) {
 			students = await Rider.find({
 				$and: [
 					{ age: { $gte: lowest } }, { age: { $lte: highest } }
 				]
-			}).skip(skips).limit(5);
+			}).skip(skips).limit(5).sort('age');
 		} else {
-			students = await Rider.find({}).skip(skips).limit(5);
+			students = await Rider.find({}).skip(skips).limit(5).sort('age');
 		}
 		if (students) {
-			const data = await students.sort((a, b) => a.age - b.age);
-			res.send({ success: true, data });
+			res.send({ success: true, students });
 		}
 	} catch (error) {
 		res.send(error);
