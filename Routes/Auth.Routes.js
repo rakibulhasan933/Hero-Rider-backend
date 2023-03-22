@@ -6,6 +6,7 @@ const RiderSchema = require('../schema/riderSchema');
 const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
+const AdminVerify = require('../helpers/admin_verify');
 
 const router = express.Router();
 
@@ -141,7 +142,8 @@ router.post('/login', async (req, res) => {
 	try {
 		const riderMatched = await Rider.findOne({ email: req.body?.email })
 		const learnerMatched = await Learner.findOne({ email: req.body?.email });
-		const user = riderMatched || learnerMatched;
+		const AdminMatched = await Admin.findOne({ email: req.body?.email });
+		const user = riderMatched || learnerMatched || AdminMatched;
 		if (user) {
 			const isValidPassword = await bcrypt.compare(req.body.password, user?.password);
 			if (!isValidPassword) {
@@ -167,7 +169,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 // Search Query
-router.get('/student', JWTVerify, async (req, res) => {
+router.get('/student', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
@@ -200,13 +202,13 @@ router.get('/student', JWTVerify, async (req, res) => {
 	}
 });
 // ALL Teachers
-router.get('/teachers', async (req, res) => {
+router.get('/teachers', JWTVerify, async (req, res) => {
 	const result = await Learner.find({});
 	res.json(result);
 });
 
 //GET ID FILTER
-router.get('/:email', async (req, res) => {
+router.get('/:email', JWTVerify, async (req, res) => {
 	try {
 		const email = req.params.email;
 		const rider = await Rider.findOne({ email: email });
