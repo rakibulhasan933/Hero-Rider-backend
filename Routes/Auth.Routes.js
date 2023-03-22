@@ -167,7 +167,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-// Get ALL Students
+// Search Query
 router.get('/student', async (req, res) => {
 	try {
 		const search = req.query.search;
@@ -201,25 +201,6 @@ router.get('/student', async (req, res) => {
 		res.send(error);
 	}
 });
-// Age Search
-router.get('/age', async (req, res) => {
-	try {
-
-		let students;
-		if (highest && lowest) {
-
-		} else {
-			students = await Rider.find({});
-		}
-		if (students) {
-			const data = await students.sort((a, b) => b.age - a.age);
-			res.send({ success: true, data });
-		}
-	} catch (error) {
-		res.send(error);
-	}
-})
-
 // ALL Teachers
 router.get('/teachers', async (req, res) => {
 	const result = await Learner.find({});
