@@ -18,7 +18,7 @@ app.get('/', (req, res) =>
 )
 // Not Found 
 app.use((req, res, next) => {
-	next(createError.NotFound());
+	next('Not Found');
 });
 
 // Error Handler
