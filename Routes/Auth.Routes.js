@@ -8,6 +8,8 @@ const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
 const AdminVerify = require('../helpers/admin_verify');
 const ServiceSchema = require('../schema/serviceSchema');
+const PaymentSchema = require('../schema/paymentSchema');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const router = express.Router();
 
@@ -15,6 +17,7 @@ const Rider = new mongoose.model("riders", RiderSchema);
 const Learner = new mongoose.model("learners", LearnerSchema);
 const Admin = new mongoose.model("admins", AdminSchema);
 const Services = new mongoose.model("packages", ServiceSchema);
+const Payment = new mongoose.model("completed", PaymentSchema);
 
 // Create Rider 
 router.post('/rider', async (req, res) => {
@@ -76,7 +79,7 @@ router.post('/rider', async (req, res) => {
 });
 
 // create 
-router.post('/service', async (req, res) => {
+router.post('/service', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const { vehicle, price, creatorName, length, title } = req.body;
 		const Pictures = req.files.picture;
@@ -98,9 +101,20 @@ router.post('/service', async (req, res) => {
 	}
 });
 // all services
-router.get('/services', async (req, res) => {
+router.get('/services', JWTVerify, async (req, res) => {
 	try {
 		const result = await Services.find({});
+		res.send(result)
+	} catch (error) {
+		res.send(error);
+	}
+});
+// Id related
+router.get('/services/:id', JWTVerify, async (req, res) => {
+	try {
+		const id = req.params.id;
+		const query = { _id: id };
+		const result = await Services.findOne(query);
 		res.send(result)
 	} catch (error) {
 		res.send(error);
@@ -202,7 +216,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 // Search Query
-router.get('/student', async (req, res) => {
+router.get('/student', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
@@ -241,7 +255,7 @@ router.get('/teachers', JWTVerify, async (req, res) => {
 });
 
 //GET ID FILTER
-router.get('/user/:email', async (req, res) => {
+router.get('/user/:email', JWTVerify, async (req, res) => {
 	try {
 		const email = req.params.email;
 		const rider = await Rider.findOne({ email: email });
@@ -255,12 +269,12 @@ router.get('/user/:email', async (req, res) => {
 });
 
 // Add Block User
-router.patch('/block/:email', async (req, res) => {
+router.patch('/block/:email', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
 			$set: {
-				blocked: 'true',
+				blocked: true,
 			},
 		}, { new: true });
 		res.send({ success: true, result });
@@ -270,15 +284,61 @@ router.patch('/block/:email', async (req, res) => {
 });
 
 // Removed Block
-router.patch('/remove-block/:email', async (req, res) => {
+router.patch('/remove-block/:email', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
 			$set: {
-				blocked: 'no',
+				blocked: false,
 			},
 		}, { new: true });
 		res.send({ success: true, result });
+	} catch (error) {
+		res.send(error);
+	}
+});
+// Payment
+router.post('/payment', JWTVerify, async (req, res) => {
+	try {
+		const price = req.body.price;
+		const amount = price * 100;
+		const paymentIntent = await stripe.paymentIntents.create({
+			amount: amount,
+			currency: "usd",
+			payment_method_types: [
+				"card"
+			],
+		});
+		res.send({
+			clientSecret: paymentIntent.client_secret,
+		});
+	} catch (error) {
+		res.send(error);
+	}
+});
+// payment Saved
+router.post('/payment-saved', JWTVerify, async (req, res) => {
+	try {
+		const { name, email, course, services, transactionId } = req.body;
+		const newPayment = new Payment({
+			name,
+			email,
+			course,
+			services,
+			transactionId,
+		});
+		const result = await newPayment.save();
+		res.send(result);
+	} catch (error) {
+		res.send(error)
+	}
+});
+
+// all completed Payment
+router.get('/completed-payment', JWTVerify, AdminVerify, async (req, res) => {
+	try {
+		const result = await Payment.find({});
+		res.send(result);
 	} catch (error) {
 		res.send(error);
 	}
