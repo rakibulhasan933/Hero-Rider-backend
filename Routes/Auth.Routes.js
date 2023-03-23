@@ -269,7 +269,7 @@ router.get('/user/:email', async (req, res) => {
 });
 
 // Add Block User
-router.patch('/block/:email', JWTVerify, AdminVerify, async (req, res) => {
+router.patch('/block/:email', async (req, res) => {
 	try {
 		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
@@ -284,7 +284,7 @@ router.patch('/block/:email', JWTVerify, AdminVerify, async (req, res) => {
 });
 
 // Removed Block
-router.patch('/remove-block/:email', JWTVerify, AdminVerify, async (req, res) => {
+router.patch('/remove-block/:email', async (req, res) => {
 	try {
 		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
@@ -298,7 +298,7 @@ router.patch('/remove-block/:email', JWTVerify, AdminVerify, async (req, res) =>
 	}
 });
 // Payment
-router.post('/payment', JWTVerify, async (req, res) => {
+router.post('/payment', async (req, res) => {
 	try {
 		const price = req.body.price;
 		const amount = price * 100;
@@ -317,7 +317,7 @@ router.post('/payment', JWTVerify, async (req, res) => {
 	}
 });
 // payment Saved
-router.post('/payment-saved', JWTVerify, async (req, res) => {
+router.post('/payment-saved', async (req, res) => {
 	try {
 		const { name, email, course, services, transactionId } = req.body;
 		const newPayment = new Payment({
@@ -335,7 +335,7 @@ router.post('/payment-saved', JWTVerify, async (req, res) => {
 });
 
 // all completed Payment
-router.get('/completed-payment', JWTVerify, AdminVerify, async (req, res) => {
+router.get('/completed-payment', async (req, res) => {
 	try {
 		const result = await Payment.find({});
 		res.send(result);
