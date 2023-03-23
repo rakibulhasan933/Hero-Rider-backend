@@ -67,7 +67,6 @@ const RiderSchema = mongoose.Schema({
 	},
 	blocked: {
 		type: Boolean,
-		default: false,
 		required: true,
 	},
 });

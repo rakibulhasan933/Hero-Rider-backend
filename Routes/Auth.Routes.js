@@ -168,7 +168,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 // Search Query
-router.get('/student', JWTVerify, AdminVerify, async (req, res) => {
+router.get('/student', async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
@@ -207,7 +207,7 @@ router.get('/teachers', JWTVerify, async (req, res) => {
 });
 
 //GET ID FILTER
-router.get('/:email', JWTVerify, async (req, res) => {
+router.get('/user/:email', JWTVerify, async (req, res) => {
 	try {
 		const email = req.params.email;
 		const rider = await Rider.findOne({ email: email });
@@ -221,12 +221,12 @@ router.get('/:email', JWTVerify, async (req, res) => {
 });
 
 // Add Block User
-router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
+router.patch('/block/:email', async (req, res) => {
 	try {
-		const email = req.body.email;
+		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
 			$set: {
-				blocked: true,
+				blocked: 'yes',
 			},
 		}, { new: true });
 		res.send({ success: true, result });
@@ -236,12 +236,12 @@ router.put('/block', JWTVerify, AdminVerify, async (req, res) => {
 });
 
 // Removed Block
-router.put('/removed-block', JWTVerify, AdminVerify, async (req, res) => {
+router.patch('/remove-block/:email', async (req, res) => {
 	try {
-		const email = req.body.email;
+		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
 			$set: {
-				blocked: false,
+				blocked: 'no',
 			},
 		}, { new: true });
 		res.send({ success: true, result });
