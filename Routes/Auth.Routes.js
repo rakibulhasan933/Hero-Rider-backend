@@ -101,7 +101,7 @@ router.post('/service', JWTVerify, AdminVerify, async (req, res) => {
 	}
 });
 // all services
-router.get('/services', JWTVerify, async (req, res) => {
+router.get('/services', async (req, res) => {
 	try {
 		const result = await Services.find({});
 		res.send(result)
@@ -110,7 +110,7 @@ router.get('/services', JWTVerify, async (req, res) => {
 	}
 });
 // Id related
-router.get('/services/:id', JWTVerify, async (req, res) => {
+router.get('/services/:id', async (req, res) => {
 	try {
 		const id = req.params.id;
 		const query = { _id: id };
