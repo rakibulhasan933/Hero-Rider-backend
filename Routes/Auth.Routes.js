@@ -216,13 +216,13 @@ router.post('/login', async (req, res) => {
 	}
 });
 // Search Query
-router.get('/student', JWTVerify, AdminVerify, async (req, res) => {
+router.get('/student', async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
 		const lowest = req.query.lowest;
 		const page = Number(req.query.page) || 1;
-		const skips = (page - 1) * 5;
+		const skips = (page - 1) * 10;
 		let students;
 		if (search) {
 			students = await Rider.find({
@@ -231,15 +231,15 @@ router.get('/student', JWTVerify, AdminVerify, async (req, res) => {
 					{ email: new RegExp(search, "i") },
 					{ phone: new RegExp(search, "i") }
 				]
-			}).skip(skips).limit(3).sort('age');
+			}).skip(skips).limit(10).sort('age');
 		} else if (highest > lowest) {
 			students = await Rider.find({
 				$and: [
 					{ age: { $gte: lowest } }, { age: { $lte: highest } }
 				]
-			}).skip(skips).limit(5).sort('age');
+			}).skip(skips).limit(10).sort('age');
 		} else {
-			students = await Rider.find({}).skip(skips).limit(5).sort('age');
+			students = await Rider.find({}).skip(skips).limit(10).sort('age');
 		}
 		if (students) {
 			res.send({ success: true, students });
@@ -255,7 +255,7 @@ router.get('/teachers', JWTVerify, async (req, res) => {
 });
 
 //GET ID FILTER
-router.get('/user/:email', JWTVerify, async (req, res) => {
+router.get('/user/:email', async (req, res) => {
 	try {
 		const email = req.params.email;
 		const rider = await Rider.findOne({ email: email });
