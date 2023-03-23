@@ -7,12 +7,14 @@ const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
 const AdminVerify = require('../helpers/admin_verify');
+const ServiceSchema = require('../schema/serviceSchema');
 
 const router = express.Router();
 
 const Rider = new mongoose.model("riders", RiderSchema);
 const Learner = new mongoose.model("learners", LearnerSchema);
 const Admin = new mongoose.model("admins", AdminSchema);
+const Services = new mongoose.model("packages", ServiceSchema);
 
 // Create Rider 
 router.post('/rider', async (req, res) => {
@@ -73,6 +75,38 @@ router.post('/rider', async (req, res) => {
 	}
 });
 
+// create 
+router.post('/service', async (req, res) => {
+	try {
+		const { vehicle, price, creatorName, length, title } = req.body;
+		const Pictures = req.files.picture;
+		const PictureData = await Pictures.data;
+		const encodePicture = await PictureData.toString('base64');
+		const PictureImageBuffer = Buffer.from(encodePicture, 'base64');
+		const newService = new Services({
+			title,
+			vehicle,
+			price,
+			creatorName,
+			length,
+			picture: PictureImageBuffer,
+		});
+		const result = await newService.save();
+		res.send(result);
+	} catch (error) {
+		res.send(error);
+	}
+});
+// all services
+router.get('/services', async (req, res) => {
+	try {
+		const result = await Services.find({});
+		res.send(result)
+	} catch (error) {
+		res.send(error);
+	}
+})
+
 // Create Teacher
 router.post('/learner', async (req, res) => {
 	try {
@@ -108,7 +142,7 @@ router.post('/learner', async (req, res) => {
 			role: "teacher"
 		});
 		const result = await newLearner.save();
-		res.json({ success: true });
+		res.json({ success: true, result });
 
 	} catch (error) {
 		res.send(error);
@@ -207,7 +241,7 @@ router.get('/teachers', JWTVerify, async (req, res) => {
 });
 
 //GET ID FILTER
-router.get('/user/:email', JWTVerify, async (req, res) => {
+router.get('/user/:email', async (req, res) => {
 	try {
 		const email = req.params.email;
 		const rider = await Rider.findOne({ email: email });
@@ -226,7 +260,7 @@ router.patch('/block/:email', async (req, res) => {
 		const email = req.params.email;
 		const result = await Rider.updateOne({ email: email }, {
 			$set: {
-				blocked: 'yes',
+				blocked: 'true',
 			},
 		}, { new: true });
 		res.send({ success: true, result });
@@ -249,5 +283,7 @@ router.patch('/remove-block/:email', async (req, res) => {
 		res.send(error);
 	}
 });
+
+
 
 module.exports = router;
