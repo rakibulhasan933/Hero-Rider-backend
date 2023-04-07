@@ -152,11 +152,7 @@ router.post('/login', async (req, res) => {
 		res.send(error);
 	}
 });
-// ALL Teachers
-router.get('/teachers', JWTVerify, async (req, res) => {
-	const result = await Learner.find({});
-	res.json(result);
-});
+
 
 //GET ID FILTER
 router.get('/user/:email', async (req, res) => {
