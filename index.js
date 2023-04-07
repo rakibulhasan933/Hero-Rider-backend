@@ -6,6 +6,9 @@ dotenv.config();
 require('./helpers/init_mongodb');
 const UserRoute = require('./Routes/Auth.Routes');
 const ServiceRoute = require('./Routes/Services.Routes');
+const RiderRoute = require('./Routes/Rider.Routes');
+
+
 const app = express();
 const port = 5000;
 
@@ -15,6 +18,7 @@ app.use(fileUpload());
 
 app.use('/auth', UserRoute);
 app.use('/services', ServiceRoute);
+app.use('/rider', RiderRoute);
 
 
 app.get('/', (req, res) =>

@@ -173,39 +173,6 @@ router.post('/login', async (req, res) => {
 		res.send(error);
 	}
 });
-// Search Query
-router.get('/student', async (req, res) => {
-	try {
-		const search = req.query.search;
-		const highest = req.query.highest;
-		const lowest = req.query.lowest;
-		const page = Number(req.query.page) || 1;
-		const skips = (page - 1) * 10;
-		let students;
-		if (search) {
-			students = await Rider.find({
-				$or: [
-					{ name: new RegExp(search, "i") },
-					{ email: new RegExp(search, "i") },
-					{ phone: new RegExp(search, "i") }
-				]
-			}).skip(skips).limit(10).sort('age');
-		} else if (highest > lowest) {
-			students = await Rider.find({
-				$and: [
-					{ age: { $gte: lowest } }, { age: { $lte: highest } }
-				]
-			}).skip(skips).limit(10).sort('age');
-		} else {
-			students = await Rider.find({}).skip(skips).limit(10).sort('age');
-		}
-		if (students) {
-			res.send({ success: true, students });
-		}
-	} catch (error) {
-		res.send(error);
-	}
-});
 // ALL Teachers
 router.get('/teachers', JWTVerify, async (req, res) => {
 	const result = await Learner.find({});
