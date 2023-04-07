@@ -6,6 +6,7 @@ const UserRoute = require('./Routes/Auth.Routes');
 const ServiceRoute = require('./Routes/Services.Routes');
 const RiderRoute = require('./Routes/Rider.Routes');
 const AdminRoute = require('./Routes/Admin.Routes');
+const LearnerRoute = require('./Routes/Teachers.Routes');
 
 dotenv.config();
 require('./helpers/init_mongodb');
@@ -22,6 +23,8 @@ app.use('/auth', UserRoute);
 app.use('/services', ServiceRoute);
 app.use('/rider', RiderRoute);
 app.use('/admin', AdminRoute);
+app.use('/learner', LearnerRoute);
+
 
 
 
