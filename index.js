@@ -2,11 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-dotenv.config();
-require('./helpers/init_mongodb');
 const UserRoute = require('./Routes/Auth.Routes');
 const ServiceRoute = require('./Routes/Services.Routes');
 const RiderRoute = require('./Routes/Rider.Routes');
+const AdminRoute = require('./Routes/Admin.Routes');
+
+dotenv.config();
+require('./helpers/init_mongodb');
 
 
 const app = express();
@@ -19,6 +21,8 @@ app.use(fileUpload());
 app.use('/auth', UserRoute);
 app.use('/services', ServiceRoute);
 app.use('/rider', RiderRoute);
+app.use('/admin', AdminRoute);
+
 
 
 app.get('/', (req, res) =>

@@ -7,7 +7,6 @@ const LearnerSchema = require('../schema/learnerSchema');
 const AdminSchema = require('../schema/adminSchema');
 const JWTVerify = require('../helpers/jwt_verify');
 const AdminVerify = require('../helpers/admin_verify');
-const ServiceSchema = require('../schema/serviceSchema');
 const PaymentSchema = require('../schema/paymentSchema');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -121,27 +120,7 @@ router.post('/learner', async (req, res) => {
 	}
 });
 
-// Create Admin
-router.post('/addAdmin', async (req, res) => {
-	try {
-		const hashedPassword = await bcrypt.hash(req.body?.password, 10);
-		const riderMatched = await Rider.findOne({ email: req.body?.email })
-		const learnerMatched = await Learner.findOne({ email: req.body?.email })
-		const AdminMatched = await Admin.findOne({ email: req.body?.email })
-		if (riderMatched || learnerMatched || AdminMatched) {
-			return res.json({ error: `${req.body?.email} is already register`, });
-		}
-		const newAdmin = new Admin({
-			email: req.body.email,
-			password: hashedPassword,
-			role: "admin",
-		});
-		const result = await newAdmin.save();
-		res.json({ success: true });
-	} catch (error) {
-		res.send(error);
-	}
-});
+
 
 // Login
 router.post('/login', async (req, res) => {
