@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const RiderSchema = require('../schema/riderSchema');
+const JWTVerify = require('../helpers/jwt_verify');
+const AdminVerify = require('../helpers/admin_verify');
 
 const router = express.Router();
 
@@ -8,7 +10,7 @@ const Rider = new mongoose.model("riders", RiderSchema);
 
 
 // Search Query
-router.get('/', async (req, res) => {
+router.get('/', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const search = req.query.search;
 		const highest = req.query.highest;
@@ -42,7 +44,7 @@ router.get('/', async (req, res) => {
 });
 
 // ID Species 
-router.get('/:id', async (req, res) => {
+router.get('/:id', JWTVerify, AdminVerify, async (req, res) => {
 	try {
 		const id = req.params.id;
 		const result = await Rider.findOne({ _id: id });

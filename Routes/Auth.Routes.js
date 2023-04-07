@@ -137,12 +137,14 @@ router.post('/login', async (req, res) => {
 				});
 			} else {
 				const token = jwt.sign({
-					email: user.email
+					email: user.email,
+					id: user._id,
 				}, process.env.JWT_PRIVATE_KEY, { expiresIn: '10h', issuer: 'hero-rider.com', });
 				res.json({
 					success: true,
 					access_token: token,
 					email: user.email,
+					id: user._id
 				});
 			}
 		} else {
