@@ -16,7 +16,6 @@ const router = express.Router();
 const Rider = new mongoose.model("riders", RiderSchema);
 const Learner = new mongoose.model("learners", LearnerSchema);
 const Admin = new mongoose.model("admins", AdminSchema);
-const Services = new mongoose.model("packages", ServiceSchema);
 const Payment = new mongoose.model("completed", PaymentSchema);
 
 // Create Rider 
@@ -78,48 +77,7 @@ router.post('/rider', async (req, res) => {
 	}
 });
 
-// create 
-router.post('/service', JWTVerify, AdminVerify, async (req, res) => {
-	try {
-		const { vehicle, price, creatorName, length, title } = req.body;
-		const Pictures = req.files.picture;
-		const PictureData = await Pictures.data;
-		const encodePicture = await PictureData.toString('base64');
-		const PictureImageBuffer = Buffer.from(encodePicture, 'base64');
-		const newService = new Services({
-			title,
-			vehicle,
-			price,
-			creatorName,
-			length,
-			picture: PictureImageBuffer,
-		});
-		const result = await newService.save();
-		res.send(result);
-	} catch (error) {
-		res.send(error);
-	}
-});
-// all services
-router.get('/services', async (req, res) => {
-	try {
-		const result = await Services.find({});
-		res.send(result)
-	} catch (error) {
-		res.send(error);
-	}
-});
-// Id related
-router.get('/services/:id', async (req, res) => {
-	try {
-		const id = req.params.id;
-		const query = { _id: id };
-		const result = await Services.findOne(query);
-		res.send(result)
-	} catch (error) {
-		res.send(error);
-	}
-})
+
 
 // Create Teacher
 router.post('/learner', async (req, res) => {

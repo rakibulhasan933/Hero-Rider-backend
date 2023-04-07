@@ -5,6 +5,7 @@ const cors = require('cors');
 dotenv.config();
 require('./helpers/init_mongodb');
 const UserRoute = require('./Routes/Auth.Routes');
+const ServiceRoute = require('./Routes/Services.Routes');
 const app = express();
 const port = 5000;
 
@@ -13,6 +14,9 @@ app.use(cors());
 app.use(fileUpload());
 
 app.use('/auth', UserRoute);
+app.use('/services', ServiceRoute);
+
+
 app.get('/', (req, res) =>
 	res.send(`Authentication Server Running port on ${port}`)
 )
